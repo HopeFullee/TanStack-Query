@@ -1,5 +1,12 @@
+import { TodoList } from "@/components/todo";
+
 const Todo = () => {
-  return <section>this is To do Page</section>;
+  return (
+    <section>
+      <h2>TODO PAGE</h2>
+      <TodoList />
+    </section>
+  );
 };
 
 export default Todo;

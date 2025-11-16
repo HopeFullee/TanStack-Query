@@ -5,7 +5,6 @@ const Layout = () => {
   return (
     <div>
       <main>
-        'i am layout'
         <Suspense>
           <Outlet />
         </Suspense>

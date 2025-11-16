@@ -3,6 +3,9 @@ import Main from "./pages/Main";
 import Layout from "@/components/layout";
 import Todo from "@/pages/Todo";
 import { Suspense } from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 const router = createBrowserRouter([
   {
@@ -24,11 +27,11 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <div>
+    <QueryClientProvider client={queryClient}>
       <Suspense fallback={null}>
         <RouterProvider router={router} />
       </Suspense>
-    </div>
+    </QueryClientProvider>
   );
 }
 
