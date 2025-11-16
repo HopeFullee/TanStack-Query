@@ -6,19 +6,29 @@ type DataType = {
 };
 
 export const TodoList = () => {
-  const { data } = useQuery({
+  const { data, isFetching, isPending, refetch, isError, error } = useQuery({
     queryKey: ["todoList"],
     queryFn: async () => {
-      const res = await fetch("https://jsonplaceholder.typicode.com/todos");
+      const res = await fetch("https://jsonplaceholder.typicodexx.com/todos");
       return await res.json();
     },
+    retry: 3,
+    retryDelay: 1000,
   });
 
-  console.log(data);
+  if (isError) {
+    return "에러발생: " + error.message;
+  }
 
   return (
-    <ul>
-      {data && data.map(({ id, title }: DataType) => <li key={id}>{title}</li>)}
-    </ul>
+    <>
+      <p>Is Pending: {isPending ? "로딩중..." : "완료"}</p>
+      <p>Is Fetching: {isFetching ? "로딩중..." : "완료"}</p>
+      <button onClick={() => refetch()}>refetch</button>
+      <ul>
+        {data &&
+          data?.map(({ id, title }: DataType) => <li key={id}>{title}</li>)}
+      </ul>
+    </>
   );
 };
