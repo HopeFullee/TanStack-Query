@@ -1,44 +1,95 @@
-import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState, type FormEvent } from "react";
+import { v4 as uuidv4 } from "uuid";
+import axios from "axios";
 
 type DataType = {
-  id: number;
+  id: string;
   title: string;
 };
 
 export const TodoList = () => {
-  const [id, setId] = useState(0);
+  const [title, setTitle] = useState("");
+  const queryClient = useQueryClient();
 
-  const { data, isFetching, isPending } = useQuery({
+  const { data } = useQuery({
     queryKey: ["todoList"],
     queryFn: async () => {
-      const res = await fetch("https://jsonplaceholder.typicode.com/todos");
+      const res = await fetch("http://localhost:3000/posts");
       return await res.json();
     },
   });
 
-  const { data: detailData } = useQuery({
-    queryKey: ["todoList", id],
-    queryFn: async () => {
-      const res = await fetch(
-        "https://jsonplaceholder.typicode.com/todos/" + id
-      );
-      return await res.json();
+  const addPost = async (post: DataType) => {
+    const res = await axios.post("http://localhost:3000/posts", post);
+    return res.data;
+  };
+
+  const deletePost = async (postId: string) => {
+    const res = await axios.delete("http://localhost:3000/posts/" + postId);
+    return res.data;
+  };
+
+  const { mutate: postMutate, isPending } = useMutation({
+    mutationFn: addPost,
+    onSuccess: () => {
+      alert("등록 완료!");
+      queryClient.invalidateQueries({ queryKey: ["todoList"] });
     },
-    enabled: id > 0,
-    staleTime: 5000,
-    gcTime: 6000,
+    onError: (err) => {
+      alert(err);
+    },
+    onSettled: () => {
+      setTitle("");
+    },
   });
+
+  const { mutate: deleteMutate } = useMutation({
+    mutationFn: deletePost,
+    onSuccess: () => {
+      alert("삭제 완료!");
+      queryClient.invalidateQueries({ queryKey: ["todoList"] });
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    postMutate({
+      id: uuidv4(),
+      title,
+    });
+  };
 
   return (
     <>
-      <p>Is Pending: {isPending ? "로딩중..." : "완료"}</p>
-      <p>Is Fetching: {isFetching ? "로딩중..." : "완료"}</p>
-      <div>{JSON.stringify(detailData)}</div>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          value={title}
+          className="border p-1"
+          onChange={(e) => setTitle(e.target.value)}
+        />
+        <button type="submit" className="border p-1" disabled={isPending}>
+          등록
+        </button>
+        {isPending ? "등록중...." : null}
+      </form>
+
       <ul>
         {data?.map(({ id, title }: DataType) => (
-          <li key={id} onClick={() => setId(id)}>
-            {id} {title}
+          <li key={id}>
+            {title}
+            <button
+              className="border p-0.5"
+              onClick={() => {
+                deleteMutate(id);
+              }}
+            >
+              삭제
+            </button>
           </li>
         ))}
       </ul>

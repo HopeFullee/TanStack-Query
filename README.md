@@ -12,7 +12,7 @@
 
   - 쿼리 무효화/삭제/강제 refetch 등 테스트를 UI로 손쉽게 조작
 
-  - 개발/디버깅 효율 극대화, 눈으로 보며 서버 상태 변화를 즉각 확인할 수 있어, 원인 추적 및 최적화가 빠름
+  - 개발/디버깅 효율 극대화: 눈으로 보며 서버 상태 변화를 즉각 확인할 수 있어, 원인 추적 및 최적화가 빠름
 
 ## useQuery
 
@@ -79,3 +79,13 @@
     - 메모리 사용을 최소화하고 싶을 때
 
     - 불필요한 데이터가 메모리에 오래 남지 않게 하고 싶을 때
+
+## useMutation
+
+> CRUD의 R을 제외한 Create, Update, Delete 등을 수행함
+>
+> 일반 "fetch" 또는 "axios"와 비교했을때 mutate는 onSuccess, onError, onSettled 등의 메소드를 제공한다.
+>
+> onError 메소드를 활용해 try catch의 catch(err)를 수행한다.
+>
+> onSettled 메소드를 활용해 try catch의 finally를 수행한다.
