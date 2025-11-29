@@ -1,6 +1,6 @@
-import { TodoList } from "@/components/todo";
+import { TodoList } from "@/components/pages/todo";
 
-const Todo = () => {
+const TodoPage = () => {
   return (
     <section>
       <h2>TODO PAGE</h2>
@@ -9,4 +9,4 @@ const Todo = () => {
   );
 };
 
-export default Todo;
+export default TodoPage;

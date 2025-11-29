@@ -3,9 +3,10 @@ import { useState, type FormEvent } from "react";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 
-type DataType = {
+type PostType = {
   id: string;
   title: string;
+  page: number;
 };
 
 export const TodoList = () => {
@@ -20,7 +21,7 @@ export const TodoList = () => {
     },
   });
 
-  const addPost = async (post: DataType) => {
+  const addPost = async (post: PostType) => {
     const res = await axios.post("http://localhost:3000/posts", post);
     return res.data;
   };
@@ -32,8 +33,8 @@ export const TodoList = () => {
 
   const { mutate: postMutate, isPending } = useMutation({
     mutationFn: addPost,
-    onSuccess: () => {
-      alert("등록 완료!");
+    onSuccess: (data) => {
+      alert("등록 완료!" + data?.id);
       queryClient.invalidateQueries({ queryKey: ["todoList"] });
     },
     onError: (err) => {
@@ -60,6 +61,7 @@ export const TodoList = () => {
     postMutate({
       id: uuidv4(),
       title,
+      page: 2,
     });
   };
 
@@ -79,7 +81,7 @@ export const TodoList = () => {
       </form>
 
       <ul>
-        {data?.map(({ id, title }: DataType) => (
+        {data?.map(({ id, title }: PostType) => (
           <li key={id}>
             {title}
             <button
