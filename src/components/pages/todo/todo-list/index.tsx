@@ -1,7 +1,6 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState, type FormEvent } from "react";
+import { useTodoList, useTodoPost, useDeleteTodo } from "@/hooks/todo";
 import { v4 as uuidv4 } from "uuid";
-import axios from "axios";
 
 type PostType = {
   id: string;
@@ -11,50 +10,12 @@ type PostType = {
 
 export const TodoList = () => {
   const [title, setTitle] = useState("");
-  const queryClient = useQueryClient();
 
-  const { data } = useQuery({
-    queryKey: ["todoList"],
-    queryFn: async () => {
-      const res = await fetch("http://localhost:3000/posts");
-      return await res.json();
-    },
+  const { data: todos } = useTodoList();
+  const { mutate: postMutate, isPending } = useTodoPost({
+    clearInput: () => setTitle(""),
   });
-
-  const addPost = async (post: PostType) => {
-    const res = await axios.post("http://localhost:3000/posts", post);
-    return res.data;
-  };
-
-  const deletePost = async (postId: string) => {
-    const res = await axios.delete("http://localhost:3000/posts/" + postId);
-    return res.data;
-  };
-
-  const { mutate: postMutate, isPending } = useMutation({
-    mutationFn: addPost,
-    onSuccess: (data) => {
-      alert("등록 완료!" + data?.id);
-      queryClient.invalidateQueries({ queryKey: ["todoList"] });
-    },
-    onError: (err) => {
-      alert(err);
-    },
-    onSettled: () => {
-      setTitle("");
-    },
-  });
-
-  const { mutate: deleteMutate } = useMutation({
-    mutationFn: deletePost,
-    onSuccess: () => {
-      alert("삭제 완료!");
-      queryClient.invalidateQueries({ queryKey: ["todoList"] });
-    },
-    onError: (err) => {
-      console.log(err);
-    },
-  });
+  const { mutate: deleteMutate } = useDeleteTodo();
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -81,7 +42,7 @@ export const TodoList = () => {
       </form>
 
       <ul>
-        {data?.map(({ id, title }: PostType) => (
+        {todos?.map(({ id, title }: PostType) => (
           <li key={id}>
             {title}
             <button
