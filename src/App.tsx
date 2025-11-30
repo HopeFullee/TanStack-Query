@@ -3,6 +3,7 @@ import InfinitePage from "@/pages/Infinite";
 import PaginationPage from "@/pages/Pagination";
 import Layout from "@/components/layout";
 import Todo from "@/pages/Todo";
+import TanstackFormPage from "@/pages/tanstack-form";
 import { Suspense } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -31,6 +32,10 @@ const router = createBrowserRouter([
       {
         path: "pagination",
         element: <PaginationPage />,
+      },
+      {
+        path: "tanstack-form",
+        element: <TanstackFormPage />,
       },
     ],
   },
