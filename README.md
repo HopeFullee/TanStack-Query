@@ -94,6 +94,10 @@
 
 ## TanStack-Form (폼관리)
 
+학습에 도움이된 영상: https://www.youtube.com/watch?v=YJ3rW85fnKo&list=PLOQjd5dsGSxInTKUWTxyqSKwZCjDIUs0Y&index=8
+
+ㄴ 첫술에 배부를 수 없다.. 두고두고 이해 할 때까지 돌려보자
+
 > React-Hook-Form 놔두고 TanStack-Form을 써야할 이유가 무엇이 있을까?
 >
 > RHF은 태생이 JS 기반이지만, TSF는 TS기반으로 제작되어 타입 안정성이 훨신 우월하다고 한다.
